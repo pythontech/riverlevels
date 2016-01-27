@@ -1,0 +1,123 @@
+{ 
+    "@context" : "http://environment.data.gov.uk/flood-monitoring/meta/context.jsonld" ,
+    "meta" : { 
+	"publisher" : "Environment Agency" ,
+	"licence" : "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" ,
+	"documentation" : "http://environment.data.gov.uk/flood-monitoring/doc/reference" ,
+	"version" : "0.5" ,
+	"comment" : "Status: Beta service"
+    }
+   ,
+    "items" : [
+	{ 
+	    "@id" : "http://environment.data.gov.uk/flood-monitoring/id/stations/1681TH" ,
+	    "RLOIid" : "7402" ,
+	    "catchmentName" : "Vale of White Horse" ,
+	    "dateOpened" : "2012-03-22" ,
+	    "label" : "Abingdon Peachcroft" ,
+	    "measures" : [
+		{ 
+		    "@id" : "http://environment.data.gov.uk/flood-monitoring/id/measures/1681TH-level-stage-i-15_min-mASD" ,
+		    "parameter" : "level" ,
+		    "parameterName" : "Water Level" ,
+		    "period" : 900 ,
+		    "qualifier" : "Stage" ,
+		    "unitName" : "mASD"
+		}
+	    ] ,
+	    "notation" : "1681TH" ,
+	    "riverName" : "Ock" ,
+	    "stageScale" : "http://environment.data.gov.uk/flood-monitoring/id/stations/1681TH/stageScale" ,
+	    "stationReference" : "1681TH" ,
+	    "town" : "Abingdon" ,
+	    "wiskiID" : "1681TH"
+	},
+	{ 
+	    "@id" : "http://environment.data.gov.uk/flood-monitoring/id/stations/1790TH" ,
+	    "RLOIid" : "7081" ,
+	    "catchmentName" : "Vale of White Horse" ,
+	    "dateOpened" : "1978-01-01" ,
+	    "label" : "Abingdon" ,
+	    "measures" : [
+		{ 
+		    "@id" : "http://environment.data.gov.uk/flood-monitoring/id/measures/1790TH-level-downstage-i-15_min-mASD" ,
+		    "parameter" : "level" ,
+		    "parameterName" : "Water Level" ,
+		    "period" : 900 ,
+		    "qualifier" : "Downstream Stage" ,
+		    "unitName" : "mASD"
+		}
+		, { 
+		    "@id" : "http://environment.data.gov.uk/flood-monitoring/id/measures/1790TH-level-stage-i-15_min-mASD" ,
+		    "parameter" : "level" ,
+		    "parameterName" : "Water Level" ,
+		    "period" : 900 ,
+		    "qualifier" : "Stage" ,
+		    "unitName" : "mASD"
+		}
+	    ] ,
+	    "notation" : "1790TH" ,
+	    "riverName" : "Ock" ,
+	    "stageScale" : "http://environment.data.gov.uk/flood-monitoring/id/stations/1790TH/stageScale" ,
+	    "stationReference" : "1790TH" ,
+	    "town" : "Abingdon" ,
+	    "wiskiID" : "1790TH"
+	},
+	{ 
+	    "@id" : "http://environment.data.gov.uk/flood-monitoring/id/stations/1679TH" ,
+	    "RLOIid" : "7003" ,
+	    "catchmentName" : "Vale of White Horse" ,
+	    "dateOpened" : "2009-08-03" ,
+	    "label" : "Abingdon" ,
+	    "measures" : [
+		{ 
+		    "@id" : "http://environment.data.gov.uk/flood-monitoring/id/measures/1679TH-level-stage-i-15_min-mASD" ,
+		    "parameter" : "level" ,
+		    "parameterName" : "Water Level" ,
+		    "period" : 900 ,
+		    "qualifier" : "Stage" ,
+		    "unitName" : "mASD"
+		}
+	    ] ,
+	    "notation" : "1679TH" ,
+	    "riverName" : "Stert" ,
+	    "stageScale" : "http://environment.data.gov.uk/flood-monitoring/id/stations/1679TH/stageScale" ,
+	    "stationReference" : "1679TH" ,
+	    "town" : "Abingdon" ,
+	    "wiskiID" : "1679TH"
+	},
+	{ 
+	    "@id" : "http://environment.data.gov.uk/flood-monitoring/id/stations/1503TH" ,
+	    "RLOIid" : "7073" ,
+	    "catchmentName" : "Cherwell Thame and Wye" ,
+	    "dateOpened" : "1997-01-01" ,
+	    "downstageScale" : "http://environment.data.gov.uk/flood-monitoring/id/stations/1503TH/downstageScale" ,
+	    "label" : "Abingdon Lock" ,
+	    "measures" : [
+		{ 
+		    "@id" : "http://environment.data.gov.uk/flood-monitoring/id/measures/1503TH-level-downstage-i-15_min-mASD" ,
+		    "parameter" : "level" ,
+		    "parameterName" : "Water Level" ,
+		    "period" : 900 ,
+		    "qualifier" : "Downstream Stage" ,
+		    "unitName" : "mASD"
+		},
+		{ 
+		    "@id" : "http://environment.data.gov.uk/flood-monitoring/id/measures/1503TH-level-stage-i-15_min-mASD" ,
+		    "parameter" : "level" ,
+		    "parameterName" : "Water Level" ,
+		    "period" : 900 ,
+		    "qualifier" : "Stage" ,
+		    "unitName" : "mASD"
+		}
+	    ] ,
+	    "notation" : "1503TH" ,
+	    "riverName" : "Thames" ,
+	    "stageScale" : "http://environment.data.gov.uk/flood-monitoring/id/stations/1503TH/stageScale" ,
+	    "stationReference" : "1503TH" ,
+	    "town" : "Abingdon" ,
+	    "wiskiID" : "1503TH"
+	}
+    ]
+}
+

@@ -1,0 +1,56 @@
+{ 
+    "@context" : "http://environment.data.gov.uk/flood-monitoring/meta/context.jsonld" ,
+    "meta" : { 
+	"publisher" : "Environment Agency" ,
+	"licence" : "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" ,
+	"documentation" : "http://environment.data.gov.uk/flood-monitoring/doc/reference" ,
+	"version" : "0.5" ,
+	"comment" : "Status: Beta service"
+    } ,
+    "items" : [
+	{ 
+	    "@id" : "http://environment.data.gov.uk/flood-monitoring/id/measures/1503TH-level-stage-i-15_min-mASD" ,
+	    "datumType" : "http://environment.data.gov.uk/flood-monitoring/def/core/datumASD" ,
+	    "label" : "River Thames at Abingdon Lock - level-stage-i-15_min-mASD" ,
+	    "latestReading" : { 
+		"@id" : "http://environment.data.gov.uk/flood-monitoring/data/readings/1503TH-level-stage-i-15_min-mASD/2016-01-26T19-00-00Z" ,
+		"date" : "2016-01-26" ,
+		"dateTime" : "2016-01-26T19:00:00Z" ,
+		"measure" : "http://environment.data.gov.uk/flood-monitoring/id/measures/1503TH-level-stage-i-15_min-mASD" ,
+		"value" : -0.012
+	    } ,
+	    "notation" : "1503TH-level-stage-i-15_min-mASD" ,
+	    "parameter" : "level" ,
+	    "parameterName" : "Water Level" ,
+	    "period" : 900 ,
+	    "qualifier" : "Stage" ,
+	    "station" : "http://environment.data.gov.uk/flood-monitoring/id/stations/1503TH" ,
+	    "stationReference" : "1503TH" ,
+	    "unit" : "http://qudt.org/1.1/vocab/unit#Meter" ,
+	    "unitName" : "mASD" ,
+	    "valueType" : "instantaneous"
+	} ,
+	{ 
+	    "@id" : "http://environment.data.gov.uk/flood-monitoring/id/measures/1503TH-level-downstage-i-15_min-mASD" ,
+	    "datumType" : "http://environment.data.gov.uk/flood-monitoring/def/core/datumASD" ,
+	    "label" : "River Thames at Abingdon Lock - level-downstage-i-15_min-mASD" ,
+	    "latestReading" : { 
+		"@id" : "http://environment.data.gov.uk/flood-monitoring/data/readings/1503TH-level-downstage-i-15_min-mASD/2016-01-26T19-00-00Z" ,
+		"date" : "2016-01-26" ,
+		"dateTime" : "2016-01-26T19:00:00Z" ,
+		"measure" : "http://environment.data.gov.uk/flood-monitoring/id/measures/1503TH-level-downstage-i-15_min-mASD" ,
+		"value" : 2.052
+	    } ,
+	    "notation" : "1503TH-level-downstage-i-15_min-mASD" ,
+	    "parameter" : "level" ,
+	    "parameterName" : "Water Level" ,
+	    "period" : 900 ,
+	    "qualifier" : "Downstream Stage" ,
+	    "station" : "http://environment.data.gov.uk/flood-monitoring/id/stations/1503TH" ,
+	    "stationReference" : "1503TH" ,
+	    "unit" : "http://qudt.org/1.1/vocab/unit#Meter" ,
+	    "unitName" : "mASD" ,
+	    "valueType" : "instantaneous"
+	}
+    ]
+}
