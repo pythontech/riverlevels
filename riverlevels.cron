@@ -4,7 +4,7 @@ RECIPIENTS='colin@pythontech.co.uk'
 
 tmp=/tmp/riverlevels.tmp
 
-python2.6 /site/pythontech/ptapps/riverlevels.py update > "$tmp" 2>&1
+python -m riverlevels alerts > "$tmp" 2>&1
 if [ -s "$tmp" ]; then
     (
 	echo "To: $RECIPIENTS"
