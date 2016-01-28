@@ -23,6 +23,7 @@ import os
 import logging
 import urllib2
 import json
+import subprocess
 
 DEFAULT_CONFIG_FILE = '~/.riverlevels.conf'
 DEFAULT_SAVE_FILE = '~/.riverlevels.save'
@@ -35,7 +36,7 @@ _log = logging.getLogger('riverlevels')
 
 class Monitor(object):
     """Handler for a single measurement at a station."""
-    def __init__(self, station, qualifier, name=None, threshold=0.1):
+    def __init__(self, station, qualifier='Stage', name=None, threshold=0.1):
         self.station = station
         self.qualifier = qualifier
         self.name = name  or  station
@@ -186,13 +187,14 @@ class Manager(object):
         lines.append('')
         lines += list(alerts)
         lines += ['', ACKNOWLEDGEMENT]
-        email = '\n'.join(lines) + '\n'
+        text = '\n'.join(lines) + '\n'
         if no_action:
-            print email,
+            print text,
         else:
             sendmail = email.get('sendmail', '/usr/sbin/sendmail')
-            p = subprocess.Popen([sendmail, '-t', '-oi'])
-            out, err = p.communicate(email)
+            p = subprocess.Popen([sendmail, '-t', '-oi'],
+                                 stdin=subprocess.PIPE)
+            p.communicate(text)
 
 def cmdline():
     import argparse
