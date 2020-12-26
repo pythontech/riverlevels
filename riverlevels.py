@@ -1,8 +1,10 @@
 #!/usr/bin/python
 #=======================================================================
-# Get river levels from Environment Agency
+"""
+Get river levels from Environment Agency
+"""
 #-----------------------------------------------------------------------
-# Copyright (C) 2016  Colin Hogben <colin@pythontech.co.uk>
+# Copyright (C) 2016-2019  Colin Hogben <colin@pythontech.co.uk>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public
@@ -19,9 +21,14 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 # 02110-1301  USA
 #=======================================================================
+from __future__ import print_function
 import os
 import logging
-import urllib2
+import sys
+if sys.version_info[0] < 3:
+    from urllib2 import urlopen
+else:
+    from urllib.request import urlopen
 import json
 import subprocess
 
@@ -62,7 +69,7 @@ class Monitor(object):
 
     def get_measures(self):
         url = API_ROOT+'/id/measures?stationReference='+self.station
-        f = urllib2.urlopen(url)
+        f = urlopen(url)
         body = f.read()
         data = json.loads(body)
         return data
@@ -92,15 +99,16 @@ class Monitor(object):
         delta = value - self.alert_level
         _log.debug('value=%g delta=%g', value, delta)
         if abs(delta) > self.threshold:
-            alert = ('%s now %.2fm, %s by %.0fcm since %s' %
-                     (self.name,
-                      value,
-                      'UP' if delta > 0 else 'DOWN',
-                      abs(delta) * 100,
-                      self.alert_date.replace('T',' ').replace('Z','')))
+            updown = 'UP' if delta > 0 else 'DOWN'
+            text = ('%s now %.2fm, %s by %.0fcm since %s' %
+                    (self.name,
+                     value,
+                     updown,
+                     abs(delta) * 100,
+                     self.alert_date.replace('T',' ').replace('Z','')))
             self.alert_level = value
             self.alert_date = date
-            return alert
+            return (updown, self.name, text)
         return None
 
 class Manager(object):
@@ -121,7 +129,7 @@ class Manager(object):
 
     @classmethod
     def from_config_file(cls, filespec):
-        if isinstance(filespec, file):
+        if hasattr(filespec, 'read'):
             config = json.load(filespec)
         else:
             with open(filespec,'r') as f:
@@ -150,6 +158,7 @@ class Manager(object):
         """Check level for each monitor and return alerts.
         An alert is raised if the current level differs from the previously
         alerted level by more than the configured threshold.
+        Each alert is a tuple ('UP' or 'DOWN', name, text)
         """
         alerts = []
         for mon in self.monitors:
@@ -178,23 +187,26 @@ class Manager(object):
         alerts = self.evaluate_alerts()
         if not alerts:
             return
-        subject = email.get('subject', 'River level changes')
+        up = any([a[0] == 'UP' for a in alerts])
+        down = any([a[0] == 'DOWN' for a in alerts])
+        updown = 'UP/DOWN' if up and down  else 'UP' if up  else 'DOWN'
+        subject = email.get('subject', 'River level changes ' + updown)
         lines = ['To: %s' % ','.join(recipients),
                  'Subject: %s' % subject]
         from_ = email.get('from')
         if from_:
             lines.append('From: %s' % from_)
         lines.append('')
-        lines += list(alerts)
+        lines += [alert[2]  for alert in alerts]
         lines += ['', ACKNOWLEDGEMENT]
         text = '\n'.join(lines) + '\n'
         if no_action:
-            print text,
+            print(text, end='')
         else:
             sendmail = email.get('sendmail', '/usr/sbin/sendmail')
             p = subprocess.Popen([sendmail, '-t', '-oi'],
                                  stdin=subprocess.PIPE)
-            p.communicate(text)
+            p.communicate(text.encode('utf8'))
 
 def cmdline():
     import argparse
@@ -231,14 +243,14 @@ def cmdline():
     if args.action == 'level':
         mon = Monitor(args.station, args.qualifier)
         value, date = mon.get_level()
-        print value, date
+        print(value, date)
     elif args.action == 'alerts':
         conffile = args.config or os.path.expanduser(DEFAULT_CONFIG_FILE)
         manager = Manager.from_config_file(conffile)
         alerts = manager.evaluate_alerts()
         manager.write_save()
         for alert in alerts:
-            print alert
+            print(alert)
     elif args.action == 'email-alerts':
         conffile = args.config or os.path.expanduser(DEFAULT_CONFIG_FILE)
         manager = Manager.from_config_file(conffile)
