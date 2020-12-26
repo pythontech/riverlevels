@@ -29,6 +29,7 @@ if sys.version_info[0] < 3:
     from urllib2 import urlopen
 else:
     from urllib.request import urlopen
+from collections import namedtuple
 import json
 import subprocess
 
@@ -40,6 +41,8 @@ ACKNOWLEDGEMENT = 'This uses Environment Agency flood and river level data'\
                   ' from the real-time data API (Beta)'
 
 _log = logging.getLogger('riverlevels')
+
+Alert = namedtuple('Alert', ['updown','name','text'])
 
 class Monitor(object):
     """Handler for a single measurement at a station."""
@@ -100,15 +103,14 @@ class Monitor(object):
         _log.debug('value=%g delta=%g', value, delta)
         if abs(delta) > self.threshold:
             updown = 'UP' if delta > 0 else 'DOWN'
-            text = ('%s now %.2fm, %s by %.0fcm since %s' %
-                    (self.name,
-                     value,
+            text = ('now %.2fm, %s by %.0fcm since %s' %
+                    (value,
                      updown,
                      abs(delta) * 100,
                      self.alert_date.replace('T',' ').replace('Z','')))
             self.alert_level = value
             self.alert_date = date
-            return (updown, self.name, text)
+            return Alert(updown, self.name, text)
         return None
 
 class Manager(object):
@@ -187,8 +189,8 @@ class Manager(object):
         alerts = self.evaluate_alerts()
         if not alerts:
             return
-        up = any([a[0] == 'UP' for a in alerts])
-        down = any([a[0] == 'DOWN' for a in alerts])
+        up = any([a.updown == 'UP' for a in alerts])
+        down = any([a.updown == 'DOWN' for a in alerts])
         updown = 'UP/DOWN' if up and down  else 'UP' if up  else 'DOWN'
         subject = email.get('subject', 'River level changes ' + updown)
         lines = ['To: %s' % ','.join(recipients),
@@ -197,7 +199,7 @@ class Manager(object):
         if from_:
             lines.append('From: %s' % from_)
         lines.append('')
-        lines += [alert[2]  for alert in alerts]
+        lines += ['%s %s' % (alert.name, alert.text)  for alert in alerts]
         lines += ['', ACKNOWLEDGEMENT]
         text = '\n'.join(lines) + '\n'
         if no_action:
