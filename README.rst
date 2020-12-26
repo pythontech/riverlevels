@@ -13,4 +13,4 @@ e.g. via email.  This is useful if, for example, for someone with a
 boat which needs its mooring lines adjusted according to the level of
 the river.
 
-See <doc/Notes.rst> for more details
+See <doc/ConfigFile.rst> and <doc/Notes.rst> for more details.

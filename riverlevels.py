@@ -32,24 +32,34 @@ else:
 from collections import namedtuple
 import json
 import subprocess
+try:
+    from html import escape
+except ImportError:             # PY2
+    from cgi import escape
 
 DEFAULT_CONFIG_FILE = '~/.riverlevels.conf'
 DEFAULT_SAVE_FILE = '~/.riverlevels.save'
 API_ROOT = 'http://environment.data.gov.uk/flood-monitoring'
+WEB_BASE = 'https://flood-warning-information.service.gov.uk/station'
 # Acknowledgement of data source, requested by EA
 ACKNOWLEDGEMENT = 'This uses Environment Agency flood and river level data'\
                   ' from the real-time data API (Beta)'
 
 _log = logging.getLogger('riverlevels')
 
-Alert = namedtuple('Alert', ['updown','name','text'])
+Alert = namedtuple('Alert', ['updown', # 'UP' or 'DOWN' for level change
+                             'name',
+                             'RLOIid',
+                             'direction', # 'u' or 'd' for monitor
+                             'text'])
 
 class Monitor(object):
     """Handler for a single measurement at a station."""
-    def __init__(self, station, qualifier='Stage', name=None, threshold=0.1):
+    def __init__(self, station, qualifier='Stage', name=None, RLOIid=None, threshold=0.1):
         self.station = station
         self.qualifier = qualifier
         self.name = name  or  station
+        self.RLOIid = RLOIid
         self.threshold = threshold
         self.key = '%s.%s' % (station, qualifier)
         self.alert_level = None
@@ -110,7 +120,8 @@ class Monitor(object):
                      self.alert_date.replace('T',' ').replace('Z','')))
             self.alert_level = value
             self.alert_date = date
-            return Alert(updown, self.name, text)
+            dirn = 'd'  if 'Downstream' in self.qualifier  else 'u'
+            return Alert(updown, self.name, self.RLOIid, dirn, text)
         return None
 
 class Manager(object):
@@ -186,6 +197,7 @@ class Manager(object):
         recipients = email.get('recipients')
         if not recipients:
             raise ValueError('No email recipients in configuration')
+        html = email.get('html')
         alerts = self.evaluate_alerts()
         if not alerts:
             return
@@ -193,15 +205,36 @@ class Manager(object):
         down = any([a.updown == 'DOWN' for a in alerts])
         updown = 'UP/DOWN' if up and down  else 'UP' if up  else 'DOWN'
         subject = email.get('subject', 'River level changes ' + updown)
-        lines = ['To: %s' % ','.join(recipients),
-                 'Subject: %s' % subject]
+        headers = ['To: %s' % ','.join(recipients),
+                   'Subject: %s' % subject]
         from_ = email.get('from')
         if from_:
-            lines.append('From: %s' % from_)
-        lines.append('')
-        lines += ['%s %s' % (alert.name, alert.text)  for alert in alerts]
-        lines += ['', ACKNOWLEDGEMENT]
-        text = '\n'.join(lines) + '\n'
+            headers.append('From: %s' % from_)
+        if html:
+            body = ['<!doctype html>',
+                    '<html lang="en">',
+                    '<head><title>%s</title></head>' % escape(subject),
+                    '<body>',
+                    '<div id="alerts">']
+            for a in alerts:
+                hname = escape(a.name)
+                if a.RLOIid is not None:
+                    url = '%s/%s?direction=%s' % \
+                          (WEB_BASE, a.RLOIid, a.direction)
+                    hname = '<a href="%s">%s</a>' % (escape(url), hname)
+                body.append('%s %s<br>' % (hname, escape(a.text)))
+            body += ['</div>',
+                     '<div id="ack">%s</div>' % escape(ACKNOWLEDGEMENT),
+                     '</body>',
+                     '</html>']
+            headers.append('Content-type: text/html; charset=UTF-8')
+        else:
+            body = ['%s %s' % (alert.name, alert.text)  for alert in alerts]
+            body += ['', ACKNOWLEDGEMENT]
+            headers.append('Content-type: text/plain; charset=UTF-8')
+        text = '\n'.join(headers +
+                         [''] +
+                         [b.encode('utf-8') for b in body]) + '\n'
         if no_action:
             print(text, end='')
         else:

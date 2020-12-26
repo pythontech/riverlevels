@@ -11,18 +11,22 @@ find stations
 
 From the results we find items of interest
 
-================ =================== ========= ========= ==========
-stationReference label               riverName parameter qualifiers
-================ =================== ========= ========= ==========
-1681TH           Abingdon Peachcroft Ock       level     Stage
-1790TH           Abingdon            Ock       level     Stage
-							 Downstream Stage
-1679TH           Abingdon            Stert     level     Stage
-1503TH           Abingdon Lock       Thames    level     Stage
-							 Downstream Stage
-1799TH           Culham Lock         Thames    level     Stage
-							 Downstream Stage
-================ =================== ========= ========= ==========
+================ ====== =================== ========= ========= ==========
+stationReference RLOIid label               riverName parameter qualifiers
+================ ====== =================== ========= ========= ==========
+1681TH           7402   Abingdon Peachcroft Ock       level     Stage
+1790TH           7081   Abingdon            Ock       level     Stage
+                                                                Downstream Stage
+1679TH           7003   Abingdon            Stert     level     Stage
+1503TH           7073   Abingdon Lock       Thames    level     Stage
+                                                                Downstream Stage
+1799TH           7083   Culham Lock         Thames    level     Stage
+                                                                Downstream Stage
+================ ====== =================== ========= ========= ==========
+
+Note that a human-friendly web page can be found at e.g.
+https://flood-warning-information.service.gov.uk/station/7083?direction=u
+where 7083 is the RLOIid
 
 
 Get measures
