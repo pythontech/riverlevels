@@ -25,8 +25,8 @@ stationReference RLOIid label               riverName parameter qualifiers
 ================ ====== =================== ========= ========= ==========
 
 Note that a human-friendly web page can be found at e.g.
-https://flood-warning-information.service.gov.uk/station/7083?direction=u
-where 7083 is the RLOIid
+https://check-for-flooding.service.gov.uk/station/7083
+where 7083 is the RLOIid (append "/downstream" for downstream stage).
 
 
 Get measures

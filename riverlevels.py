@@ -4,7 +4,7 @@
 Get river levels from Environment Agency
 """
 #-----------------------------------------------------------------------
-# Copyright (C) 2016-2019  Colin Hogben <colin@pythontech.co.uk>
+# Copyright (C) 2016-2024  Colin Hogben <colin@pythontech.co.uk>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public
@@ -40,7 +40,7 @@ except ImportError:             # PY2
 DEFAULT_CONFIG_FILE = '~/.riverlevels.conf'
 DEFAULT_SAVE_FILE = '~/.riverlevels.save'
 API_ROOT = 'http://environment.data.gov.uk/flood-monitoring'
-WEB_BASE = 'https://flood-warning-information.service.gov.uk/station'
+WEB_BASE = 'https://check-for-flooding.service.gov.uk/station'
 # Acknowledgement of data source, requested by EA
 ACKNOWLEDGEMENT = 'This uses Environment Agency flood and river level data'\
                   ' from the real-time data API (Beta)'
@@ -219,8 +219,9 @@ class Manager(object):
             for a in alerts:
                 hname = escape(a.name)
                 if a.RLOIid is not None:
-                    url = '%s/%s?direction=%s' % \
-                          (WEB_BASE, a.RLOIid, a.direction)
+                    url = '%s/%s' % (WEB_BASE, a.RLOIid)
+                    if a.direction == 'd':
+                        url += '/downstream'
                     hname = '<a href="%s">%s</a>' % (escape(url), hname)
                 body.append('%s %s<br>' % (hname, escape(a.text)))
             body += ['</div>',
