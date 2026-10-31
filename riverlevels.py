@@ -37,7 +37,8 @@ try:
 except ImportError:             # PY2
     from cgi import escape
 
-DEFAULT_CONFIG_FILE = '~/.riverlevels.conf'
+DEFAULT_CONFIG_FILE = '~/.config/riverlevels/config.json'
+OLD_DEFAULT_CONFIG_FILE = '~/.riverlevels.conf'
 DEFAULT_SAVE_FILE = '~/.riverlevels.save'
 API_ROOT = 'http://environment.data.gov.uk/flood-monitoring'
 WEB_BASE = 'https://check-for-flooding.service.gov.uk/station'
@@ -276,22 +277,37 @@ def cmdline():
     # --
     args = ap.parse_args()
     logging.basicConfig(level=args.loglevel)
-    if args.action == 'level':
-        mon = Monitor(args.station, args.qualifier)
-        value, date = mon.get_level()
-        print(value, date)
-    elif args.action == 'alerts':
-        conffile = args.config or os.path.expanduser(DEFAULT_CONFIG_FILE)
-        manager = Manager.from_config_file(conffile)
-        alerts = manager.evaluate_alerts()
-        manager.write_save()
-        for alert in alerts:
-            print(alert)
-    elif args.action == 'email-alerts':
-        conffile = args.config or os.path.expanduser(DEFAULT_CONFIG_FILE)
-        manager = Manager.from_config_file(conffile)
-        manager.email_alerts(no_action=args.no_action)
-        manager.write_save()
+    if args.action is None:
+        ap.error('No action specified')
+    try:
+        if args.action == 'level':
+            mon = Monitor(args.station, args.qualifier)
+            value, date = mon.get_level()
+            print(value, date)
+        elif args.action == 'alerts':
+            conffile = args.config or config_filename()
+            manager = Manager.from_config_file(conffile)
+            alerts = manager.evaluate_alerts()
+            manager.write_save()
+            for alert in alerts:
+                print(alert)
+        elif args.action == 'email-alerts':
+            conffile = args.config or config_filename()
+            manager = Manager.from_config_file(conffile)
+            manager.email_alerts(no_action=args.no_action)
+            manager.write_save()
+    except Exception as e:
+        if args.loglevel <= logging.DEBUG:
+            raise
+        raise SystemExit('p=%s: e=%s' % (ap.prog, e))
+
+def config_filename():
+    paths = (DEFAULT_CONFIG_FILE, OLD_DEFAULT_CONFIG_FILE)
+    for path in paths:
+        fullpath = os.path.expanduser(path)
+        if os.path.exists(fullpath):
+            return fullpath
+    raise ValueError('No config file found (%s)' % ', '.join(files))
 
 if __name__=='__main__':
     cmdline()
