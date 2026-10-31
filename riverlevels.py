@@ -236,7 +236,7 @@ class Manager(object):
             headers.append('Content-type: text/plain; charset=UTF-8')
         text = '\n'.join(headers +
                          [''] +
-                         [b.encode('utf-8') for b in body]) + '\n'
+                         body) + '\n'
         if no_action:
             print(text, end='')
         else:
