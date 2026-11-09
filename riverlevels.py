@@ -4,7 +4,7 @@
 Get river levels from Environment Agency
 """
 #-----------------------------------------------------------------------
-# Copyright (C) 2016-2024  Colin Hogben <colin@pythontech.co.uk>
+# Copyright (C) 2016-2026  Colin Hogben <colin@pythontech.co.uk>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public
@@ -180,7 +180,7 @@ class Manager(object):
             try:
                 value, date = mon.get_level()
             except Exception as e:
-                _log.warn('%s: %s', mon.name, e)
+                _log.warning('%s: %s', mon.name, e)
             else:
                 _log.info('%s: old=%s new=%s',
                           mon.name, mon.alert_level, value)
